@@ -3,12 +3,24 @@ UUUUURRRURLLRRDRLLDUUUUDDDRLRRDRUULDUURURDRLLRRRDRLLUDURUDLDURURRLUDLLLDRDUDRDRL
 LRDULUUUDLRUUUDURUUULLURDRURDRRDDDLRLRUULDLRRUDDLLUURLDRLLRUULLUDLUDUDRDRDLUUDULLLLRDDUDRRRURLRDDLRLDRLULLLRUUULURDDLLLLRURUUDDDLDUDDDDLLLURLUUUURLRUDRRLLLUUULRDUURDLRDDDUDLLRDULURURUULUDLLRRURDLUULUUDULLUDUUDURLRULRLLDLUULLRRUDDULRULDURRLRRLULLLRRDLLDDLDUDDDUDLRUURUDUUUDDLRRDLRUDRLLRDRDLURRLUDUULDRRUDRRUDLLLLRURRRRRUULULLLRDRDUDRDDURDLDDUURRURLDRRUDLRLLRRURULUUDDDLLLRDRLULLDLDDULDLUUDRURULLDLLLLDRLRRLURLRULRDLLULUDRDR
 RURRRUDLURRURLURDDRULLDRDRDRRULRRDLDDLDUUURUULLRRDRLDRRDRULLURRRULLLDULDDDDLULRUULRURUDURDUDRLRULLLRDURDDUDDRDLURRURUURDLDDDDDURURRURLLLDDLDRRDUDDLLLDRRLDDUUULDLLDRUURUDDRRLDUULRRDDUDRUULRLDLRLRUURLLDRDLDRLURULDLULDRULURLLRRLLDDDURLRUURUULULRLLLULUDULUUULDRURUDDDUUDDRDUDUDRDLLLRDULRLDLRRDRRLRDLDDULULRLRUUDDUDRRLUDRDUUUDRLLLRRLRUDRRLRUUDDLDURLDRRRUDRRDUDDLRDDLULLDLURLUUDLUDLUDLDRRLRRRULDRLRDUURLUULRDURUDUUDDURDDLRRRLUUUDURULRURLDRURULDDUDDLUDLDLURDDRRDDUDUUURLDLRDDLDULDULDDDLDRDDLUURDULLUDRRRULRLDDLRDRLRURLULLLDULLUUDURLDDULRRDDUULDRLDLULRRDULUDUUURUURDDDRULRLRDLRRURR
 UDDDRLDRDULDRLRDUDDLDLLDDLUUURDDDLUDRDUDLDURLUURUDUULUUULDUURLULLRLUDLLURUUUULRLRLLLRRLULLDRUULURRLLUDUDURULLLRRRRLRUULLRDRDRRDDLUDRRUULUDRUULRDLRDRRLRRDRRRLULRULUURRRULLRRRURUDUURRLLDDDUDDULUULRURUDUDUDRLDLUULUDDLLLLDRLLRLDULLLRLLDLUUDURDLLRURUUDDDDLLUDDRLUUDUDRDRLLURURLURRDLDDDULUURURURRLUUDUDLDLDDULLURUDLRLDLRLDLDUDULURDUDRLURRRULLDDDRDRURDDLDLULUDRUULDLULRDUUURLULDRRULLUDLDRLRDDUDURRRURRLRDUULURUUDLULDLRUUULUDRDRRUDUDULLDDRLRDLURDLRLUURDRUDRDRUDLULRUDDRDLLLRLURRURRLDDDUDDLRDRRRULLUUDULURDLDRDDDLDURRLRRDLLDDLULULRRDUDUUDUULRDRRDURDDDDUUDDLUDDUULDRDDULLUUUURRRUUURRULDRRDURRLULLDU"""
+# input = """ULL
+# RRDDD
+# LURDL
+# UUUUD"""
 input = input.split("\n")
 
 left_edge = [1, 4, 7]
 right_edge = [3, 6, 9]
 top_edge = [1,2,3]
 bottom_edge = [7,8,9]
+
+keypad = [
+['*', '*', '1', '*', '*'],
+['*', '2', '3', '4', '*'],
+['5', '6', '7', '8', '9'],
+['*', 'A', 'B', 'C', '*'],
+['*', '*', 'D', '*', '*'],
+]
 
 def move(direction, current_no):
 	if direction == 'L':
@@ -25,8 +37,45 @@ def move(direction, current_no):
 			current_no += 3
 	return current_no
 
+def keypad_number(position):
+	return keypad[position[0]][position[1]]
+
+def move_new(direction, current_no, current_position):
+	if direction == 'L':
+		new_position = (current_position[0], current_position[1] - 1)
+		if new_position[1] >= 0 and keypad_number(new_position) is not '*':
+			current_no = keypad_number(new_position)
+			current_position = new_position
+	elif direction == 'R':
+		new_position = (current_position[0], current_position[1] + 1)
+		if new_position[1] <= 4 and keypad_number(new_position) is not '*':
+			current_no = keypad_number(new_position)
+			current_position = new_position
+	elif direction == 'U':
+		new_position = (current_position[0] - 1, current_position[1])
+		if new_position[0] >= 0 and keypad_number(new_position) is not '*':
+			current_no = keypad_number(new_position)
+			current_position = new_position
+	elif direction == 'D':
+		new_position = (current_position[0] + 1, current_position[1])
+		if new_position[0] <= 4 and keypad_number(new_position) is not '*':
+			current_no = keypad_number(new_position)
+			current_position = new_position
+
+	return current_no, current_position
+
+
+
 current_no = 5
+current_position = (2, 0)
+
 for instruction in input:
 	for direction in instruction:
-		current_no = move(direction, current_no)
+		current_no, current_position = move_new(direction, current_no, current_position)
+		# print current_no
+		# print current_position
 	print current_no
+
+# print keypad[current_position[0]][current_position[1]]
+
+
